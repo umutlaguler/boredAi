@@ -4,8 +4,8 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import type {PropsWithChildren} from 'react';
 import Home from './src/screens/Home';
-// import { Provider } from 'react-redux';
-// import store from './store';
+import { Provider } from 'react-redux';
+import store from './store';
 import {
   SafeAreaView,
   ScrollView,
@@ -30,13 +30,13 @@ function App(): JSX.Element {
   // };
 
   return (
-    // <Provider store={store}>
+    <Provider store={store}>
       <NavigationContainer>
         <RootStack.Navigator initialRouteName='Home'>
           <RootStack.Screen name='Home' component={Home} options={{headerShown: false}}/>
         </RootStack.Navigator>
       </NavigationContainer>
-    // </Provider>
+    </Provider>
   );
 }
 
