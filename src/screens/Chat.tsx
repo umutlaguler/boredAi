@@ -18,7 +18,7 @@ export default function Chat() {
           const response = await axios.post(
             'https://api.openai.com/v1/completions',
             {
-              model: 'davinci-003', // kullanmak istediğiniz model
+              model: 'text-davinci-003', // kullanmak istediğiniz model
               prompt: `I want to ${activityTxt}`, // seçilen etkinliğe göre değişecek istem
               // diğer parametreler
             },

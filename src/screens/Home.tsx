@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 import { PhoneHeight, PhoneWidth } from '../constants/config'
 import Slider from '@react-native-community/slider'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchActivities, fillActivity } from '../actions/homeAction'
+import { fetchActivities, fillActivity, fillHistoryData } from '../actions/homeAction'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParams } from '../../App'
 import { useNavigation } from '@react-navigation/native';
@@ -86,6 +86,7 @@ export default function Home() {
     }
     const startChat = (activity: string) => {
         dispatch(fillActivity(activity))
+        dispatch(fillHistoryData(activityContent))
         navigation.navigate('Chat')
     }
     

@@ -17,11 +17,13 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import History from './src/screens/History';
 
 export type RootStackParams = {
   Home: undefined;
   Chat: undefined;
-  Search: undefined
+  Search: undefined;
+  History: undefined;
 }
 
 const RootStack = createNativeStackNavigator<RootStackParams>();
@@ -39,7 +41,7 @@ function App(): JSX.Element {
           <RootStack.Screen name='Home' component={Home} options={{headerShown: false}}/>
           <RootStack.Screen name='Chat' component={Chat} options={{headerShown: false}}/>
           <RootStack.Screen name='Search' component={Search} options={{headerShown: false}}/>
-
+          <RootStack.Screen name='History' component={History} options={{headerShown: false}}/>
         </RootStack.Navigator>
       </NavigationContainer>
     </Provider>

@@ -3,6 +3,12 @@ import React, { useState } from 'react'
 import { activities } from '../constants/activites.json'
 import { PhoneHeight, PhoneWidth } from '../constants/config';
 import BottomTabBar from './BottomTabBar';
+import { fillActivity } from '../actions/homeAction';
+import { useDispatch } from 'react-redux';
+//FOR NAVIGATION PROCESSES
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../App'
 interface ActivityItem {
   activity: string;
   accessibility: number;
@@ -12,12 +18,18 @@ interface ActivityItem {
   link: string;
   key: string;
 }
-const SearchBar: React.FC = () => {
+interface SearchBarProps {
+  activities: ActivityItem[]; // Aktiviteleri prop olarak alın
+}
+const SearchBar: React.FC<SearchBarProps> = ({activities}) => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>(); 
+
   const [searchText, setSearchText] = useState<string>('');
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
-  const filteredActivities = activities.filter((activity: ActivityItem)=>
-    activity.activity.toLowerCase().includes(searchText.toLowerCase())
+  const filteredActivities = activities.filter((activites: ActivityItem)=>
+    activites.activity.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const handleClearSearch = () => {
@@ -29,7 +41,9 @@ const SearchBar: React.FC = () => {
   };
 
   const renderActivityItem = ({ item }: { item: ActivityItem }) => (
-    <TouchableOpacity style = {styles.searchedItem}>
+    <TouchableOpacity 
+      onPress={() => startChat(item.activity)}
+      style = {styles.searchedItem}>
       <Text style={{ padding: 10 }}>{item.activity}</Text>
       <View style = {{flexDirection: 'row'}}>
         <Text style={{ padding: 10 }}>{item.type}</Text>
@@ -38,6 +52,10 @@ const SearchBar: React.FC = () => {
     </TouchableOpacity>
   );
 
+  const startChat = (activity: string) => {
+    dispatch(fillActivity(activity))
+    navigation.navigate('Chat')
+  }
   return (
     <SafeAreaView style={{ flex: 1, padding: 10 }}>
       <View
