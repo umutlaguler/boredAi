@@ -1,0 +1,49 @@
+{
+  "activities": [
+    {
+      "activity": "Learn React Native",
+      "accessibility": 0.1,
+      "type": "education",
+      "participants": 1,
+      "price": 0.1,
+      "link": "",
+      "key": "1"
+    },
+    {
+      "activity": "Read a book",
+      "accessibility": 0.05,
+      "type": "recreational",
+      "participants": 1,
+      "price": 0,
+      "link": "",
+      "key": "2"
+    },
+    {
+      "activity": "Play a board game",
+      "accessibility": 0.2,
+      "type": "social",
+      "participants": 2,
+      "price": 0.2,
+      "link": "",
+      "key": "3"
+    },
+    {
+      "activity": "Go for a walk",
+      "accessibility": 0,
+      "type": "relaxation",
+      "participants": 1,
+      "price": 0,
+      "link": "",
+      "key": "4"
+    },
+    {
+      "activity": "Listen to music",
+      "accessibility": 0,
+      "type": "music",
+      "participants": 1,
+      "price": 0,
+      "link": "",
+      "key": "5"
+    }
+  ]
+}

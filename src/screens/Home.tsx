@@ -3,7 +3,12 @@ import React, {useEffect, useState} from 'react'
 import { PhoneHeight, PhoneWidth } from '../constants/config'
 import Slider from '@react-native-community/slider'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchActivities } from '../actions/homeAction'
+import { fetchActivities, fillActivity } from '../actions/homeAction'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../App'
+import { useNavigation } from '@react-navigation/native';
+import BottomTabBar from '../components/BottomTabBar'
+import Header from '../components/Header'
 interface DataItem {
     id: string;
     type: string;
@@ -23,7 +28,8 @@ const data: DataItem[] = [
 ];
   
 export default function Home() {
-    const dispatch = useDispatch();  
+    const dispatch = useDispatch(); 
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>(); 
     //seçilecek olan tip
     const [selectedItem, setSelectedItem] = useState<string>('');
     const [price, setPrice] = useState<number>(0)
@@ -66,17 +72,28 @@ export default function Home() {
         setIsButtonDisabled(true)
         dispatch(fetchActivities(price, participants, accesibility, selectedItem) as any).then(() => setIsButtonDisabled(false)).catch((error: string) => console.log(error))
     }
+    const onRandomizeValues = () => {
+        const randomPrice = Math.random() * 0.5; // 0 ile 0.5 arasında rastgele bir değer
+        const randomParticipants = Math.floor(Math.random() * 5); // 0 ile 4 arasında rastgele bir tam sayı
+        const randomAccessibility = Math.random() * 0.5; // 0 ile 0.5 arasında rastgele bir değer
+
+        setPrice(randomPrice);
+        setParticipants(randomParticipants);
+        setAccessibility(randomAccessibility);
+        //to set type as randomly
+        const randomTypeIndex = Math.floor(Math.random() * data.length);
+        setSelectedItem(data[randomTypeIndex].key);
+    }
+    const startChat = (activity: string) => {
+        dispatch(fillActivity(activity))
+        navigation.navigate('Chat')
+    }
     
   return (
     <SafeAreaView style = {styles.container}>
+        <View style = {{height: PhoneHeight * 0.8}}>
         <View style = {styles.topView}>
-            <View style = {styles.titleView}>
-                <Text style = {styles.title}>Bored AI</Text>
-                <Image
-                    style={styles.userLogo}
-                    source={require('../assets/images/user.png')}
-                />
-            </View>
+            <Header/>
             <FlatList
                 data={data}
                 keyExtractor={(item, index) => index.toString()}
@@ -96,13 +113,12 @@ export default function Home() {
                             <Text style = {styles.downerText}>Searching for activities</Text>
                         </View>
                     </View>
-               
                 :
                 activityContent.length == 0?
                     <View style = {styles.activityItem}>
                         <View>
                             <Image
-                                style={styles.userLogo}
+                                style={styles.tinyLogo}
                                 source={require('../assets/images/magnifier.png')}
                             />
                         </View>
@@ -115,7 +131,7 @@ export default function Home() {
                     <View style = {styles.activityItem}>
                     <View>
                         <Image
-                            style={styles.userLogo}
+                            style={styles.tinyLogo}
                             source={require('../assets/images/magnifier.png')}
                         />
                     </View>
@@ -126,10 +142,12 @@ export default function Home() {
                         <Text style = {styles.downerText}>Please change parameters and retry!</Text>
                     </View>
                     :
-                    <View>
+                    <TouchableOpacity
+                        onPress={() => startChat(activityContent.activity)}
+                    >
                         <Text style = {styles.upperText}>{activityContent.activity}</Text>
                         <Text style = {styles.downerText}>{activityContent.type} . {activityContent.participants} Person . {activityContent.price > 0.3? 'expensive':'cheap'}</Text>
-                    </View>
+                    </TouchableOpacity>
                     }
                 </View>
             }
@@ -158,12 +176,21 @@ export default function Home() {
         </View>
         <View style = {styles.mainButtonsView}>
             <TouchableOpacity
+                style = {styles.rndBtn}
+                onPress={() => onRandomizeValues()}
+            >
+                <Text style = {styles.rndTxt}>Randomize Values</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style = {styles.findActBtn}
                 disabled={isButtonDisabled}
                 onPress={() => onFetchActivities()}
             >
-                <Text>Find Activity</Text>
+                <Text style = {styles.findActTxt}>Find Activity</Text>
             </TouchableOpacity>
         </View>
+        </View>
+        <BottomTabBar/>
     </SafeAreaView>
   )
 }
@@ -177,21 +204,6 @@ const styles = StyleSheet.create({
         width: PhoneWidth,
         height: PhoneHeight * 0.1,
         padding: 8
-    },
-    titleView:{
-        // borderWidth: 1,
-        borderColor: 'red',
-        flexDirection: 'row',
-        justifyContent:'space-between',
-        alignItems: 'center'
-    },
-    title: {
-        fontWeight:'bold',
-        fontSize: 22,
-    },
-    userLogo: {
-        width: 22,
-        height: 22
     },
     item: {
         backgroundColor: 'white',
@@ -225,12 +237,43 @@ const styles = StyleSheet.create({
         fontWeight:'300'
     },
     slidersView:{
-        borderWidth: 1,
         width: PhoneWidth, 
         height: PhoneHeight * 0.35,
         padding: 10
     },
     mainButtonsView: {
-
-    }
+        width: PhoneWidth * 0.9,
+        height: PhoneHeight * 0.1,
+        alignItems:'center',
+        alignSelf: 'center',
+        justifyContent: 'space-between'
+    },
+    findActBtn: {
+        width: '100%',
+        height: '45%',
+        alignItems: 'center',
+        backgroundColor: 'black',
+        justifyContent: 'center'
+    },
+    findActTxt: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 18
+    },
+    rndBtn: {
+        borderWidth: 1,
+        width: '100%',
+        height: '45%',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        justifyContent: 'center'
+    },
+    rndTxt: {
+        fontWeight: 'bold',
+        fontSize: 18
+    },
+    tinyLogo: {
+        width: 22,
+        height: 22
+    },
 })
