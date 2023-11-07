@@ -4,6 +4,8 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import type {PropsWithChildren} from 'react';
 import Home from './src/screens/Home';
+import Chat from './src/screens/Chat';
+import Search from './src/screens/Search';
 import { Provider } from 'react-redux';
 import store from './store';
 import {
@@ -18,7 +20,8 @@ import {
 
 export type RootStackParams = {
   Home: undefined;
-  // NewsDetail: {itemId: number};
+  Chat: undefined;
+  Search: undefined
 }
 
 const RootStack = createNativeStackNavigator<RootStackParams>();
@@ -34,6 +37,9 @@ function App(): JSX.Element {
       <NavigationContainer>
         <RootStack.Navigator initialRouteName='Home'>
           <RootStack.Screen name='Home' component={Home} options={{headerShown: false}}/>
+          <RootStack.Screen name='Chat' component={Chat} options={{headerShown: false}}/>
+          <RootStack.Screen name='Search' component={Search} options={{headerShown: false}}/>
+
         </RootStack.Navigator>
       </NavigationContainer>
     </Provider>

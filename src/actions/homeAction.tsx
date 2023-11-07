@@ -2,8 +2,8 @@ import axios from "axios";
 import { Dispatch } from "redux";
 
 export const FETCH_ACTIVITY = "fetch_activites";
+export const FILL_ACTIVITY_DATA = "fill_activity_data"
 import { BASE_API } from "../constants/config";
-import { resolve } from "path";
 
 export const fetchActivities = (price: number, participants: number, accesibility: number, selectedItem: string) => {
     console.log("price kaç ", price)
@@ -29,5 +29,11 @@ export const fetchActivities = (price: number, participants: number, accesibilit
             })
         })
         
+    }
+}
+export const fillActivity = (activity: string) => {
+    return {
+        type: FILL_ACTIVITY_DATA,
+        payload: activity
     }
 }
