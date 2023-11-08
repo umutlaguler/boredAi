@@ -3,12 +3,16 @@ import React, { useState } from 'react'
 import { activities } from '../constants/activites.json'
 import { PhoneHeight, PhoneWidth } from '../constants/config';
 import BottomTabBar from './BottomTabBar';
-import { fillActivity } from '../actions/homeAction';
+import { clearAiResponse, fillActivity } from '../actions/homeAction';
 import { useDispatch } from 'react-redux';
 //FOR NAVIGATION PROCESSES
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParams } from '../../App'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+
 interface ActivityItem {
   activity: string;
   accessibility: number;
@@ -53,6 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({activities}) => {
   );
 
   const startChat = (activity: string) => {
+    dispatch(clearAiResponse())
     dispatch(fillActivity(activity))
     navigation.navigate('Chat')
   }
