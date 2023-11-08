@@ -84,10 +84,10 @@ export default function Home() {
         const randomTypeIndex = Math.floor(Math.random() * data.length);
         setSelectedItem(data[randomTypeIndex].key);
     }
+    
     const startChat = (activity: string) => {
         dispatch(clearAiResponse())
         dispatch(fillActivity(activity))
-        dispatch(fillHistoryData(activityContent))
         navigation.navigate('Chat')
     }
     
