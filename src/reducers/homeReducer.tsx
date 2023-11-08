@@ -5,7 +5,7 @@ import { FETCH_ACTIVITY,
          FETCH_AI_RESPONSE,
          CLEAR_AI_RESPONSE 
         } from "../actions/homeAction";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export interface ActivityItem {
     activity: string;
     accessibility: number;
@@ -49,7 +49,6 @@ const INITIAL_STATE: ActivityItemState = {
     historyContent: [],
     aiResponse: ""
 }
-
 const homeReducer = (state = INITIAL_STATE, action: FetchActivitiesAction | FillActivityDataAction | FillHistoryDataAction | DeleteHistoryDataAction | FetchAiResponseAction | ClearAiResponseAction) => {
     switch (action.type) {
         case FETCH_ACTIVITY:
@@ -63,11 +62,15 @@ const homeReducer = (state = INITIAL_STATE, action: FetchActivitiesAction | Fill
                 activityTxt: action.payload
             }
         case FILL_HISTORY_DATA:
+            console.log("umut", action.payload)
+            const updatedHistoryContent = [...state.historyContent, action.payload];
+            AsyncStorage.setItem('historyContent', JSON.stringify(updatedHistoryContent)); // Save to AsyncStorage
             return {
                 ...state,
-                historyContent: [...state.historyContent, action.payload]
+                historyContent: updatedHistoryContent
             }
         case DELETE_HISTORY_DATA: 
+            AsyncStorage.removeItem('historyContent'); // Remove from AsyncStorage
             return {
                 ...state,
                 historyContent: []

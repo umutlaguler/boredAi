@@ -10,6 +10,8 @@ export const CLEAR_AI_RESPONSE = "clear_ai_response"
 
 
 import { BASE_API, CHAT_API, AI_API_KEY } from "../constants/config";
+// import { HistoryItem } from "../screens/Chat";
+import { ActivityItem } from "../components/SearchBar";
 
 
 export const fetchActivities = (price: number, participants: number, accesibility: number, selectedItem: string) => {
@@ -40,7 +42,7 @@ export const fetchActivities = (price: number, participants: number, accesibilit
 export const fetchChatResponse = (activity: string) => {
     console.log("what is our req", activity);
     const requestData = {
-        model: 'text-davinci-002', // Buraya model tipini ekleyin
+        model: 'text-davinci-003', // Buraya model tipini ekleyin
         prompt: activity,
     };
     return (dispatch: Dispatch) => {
@@ -76,7 +78,7 @@ export const fillActivity = (activity: string) => {
         payload: activity
     }
 }
-export const fillHistoryData = (value: string) => {
+export const fillHistoryData = (value: ActivityItem) => {
     return {
         type: FILL_HISTORY_DATA,
         payload: value

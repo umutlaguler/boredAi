@@ -1,17 +1,42 @@
 import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, Modal, Alert, Pressable } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import SearchBar from '../components/SearchBar'
+import { deleteHistoryData } from '../actions/homeAction'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityItem } from '../reducers/homeReducer'
 
 export default function History() {
-
+  const dispatch = useDispatch()
   const [deleteModal, setDeleteModal] = useState<boolean>(false)
   const { historyContent } = useSelector((state: any) => state.homeReducer);
+  const [parsedHistory, setParsedHistory] = useState<any>()
+
   console.log("BANA GELİYOR", historyContent)
 
   const onDeleteHistory = () => {
     setDeleteModal(!deleteModal)
+    dispatch(deleteHistoryData())
+    getHistoryFromStorage()
   }
+  const getHistoryFromStorage = async () => {
+    try {
+      const storedHistory = await AsyncStorage.getItem('historyContent');
+      if (storedHistory !== null) {
+        setParsedHistory(JSON.parse(storedHistory));
+        console.log("Stored History from AsyncStorage:", parsedHistory);
+      } else {
+        console.log("No history found in AsyncStorage.");
+      }
+    } catch (e) {
+      console.error("Error retrieving history from AsyncStorage:", e);
+    }
+  };
+
+  useEffect(() => {
+    getHistoryFromStorage();
+  }, []);
+
   return (
     <SafeAreaView style = {{flex: 1}}>
       <Modal
@@ -19,12 +44,11 @@ export default function History() {
         transparent={true}
         visible={deleteModal}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
           setDeleteModal(!deleteModal);
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Are you</Text>
+            <Text style={styles.modalText}>Are you sure to delete history?</Text>
             <View style = {{flexDirection: 'row'}}>
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
@@ -51,7 +75,7 @@ export default function History() {
       />
       </TouchableOpacity>
       </View>
-      <SearchBar activities = {historyContent}/>
+      <SearchBar activities = {parsedHistory?.length > 0? parsedHistory : historyContent}/>
     </SafeAreaView>
   )
 }
@@ -98,6 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
+    marginHorizontal: 10
   },
   buttonOpen: {
     backgroundColor: '#F194FF',

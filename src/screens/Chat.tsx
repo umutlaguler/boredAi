@@ -7,13 +7,20 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import { AI_API_KEY, PhoneHeight } from '../constants/config';
-import { fetchActivities, fetchChatResponse } from '../actions/homeAction';
-
+import { fetchActivities, fetchChatResponse, fillHistoryData } from '../actions/homeAction';
+import { ActivityItem } from '../components/SearchBar';
+export interface HistoryItem {
+  activityContent: string;
+  aiMessage: string;
+}
 export default function Chat() {
   const dispatch = useDispatch();
   const [isThinking, setIsThinking] = useState<boolean>(false);
-  const [answerResponse, setAnswerResponse] = useState<any>(null);
   const { activityTxt, aiResponse } = useSelector((state: any) => state.homeReducer);
+
+  useEffect(() => {
+    
+  }, []);
 
   useEffect(() => {
     if (aiResponse === '') {
@@ -21,9 +28,14 @@ export default function Chat() {
       dispatch(fetchChatResponse("I want to " + activityTxt) as any);
     } else {
       setIsThinking(false);
+      const historyData: ActivityItem = {
+        activity: activityTxt,
+        aiMessage: aiResponse,
+      };
+      dispatch(fillHistoryData(historyData));
     }
   }, [aiResponse, activityTxt]);
-
+ 
   return (
     <SafeAreaView>
       <View style={styles.topView}>

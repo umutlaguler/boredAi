@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { activities } from '../constants/activites.json'
 import { PhoneHeight, PhoneWidth } from '../constants/config';
 import BottomTabBar from './BottomTabBar';
-import { clearAiResponse, fillActivity } from '../actions/homeAction';
-import { useDispatch } from 'react-redux';
+import { clearAiResponse, fillActivity, fillHistoryData } from '../actions/homeAction';
+import { useDispatch, useSelector } from 'react-redux';
 //FOR NAVIGATION PROCESSES
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -13,14 +13,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-interface ActivityItem {
+export interface ActivityItem {
   activity: string;
-  accessibility: number;
-  type: string;
-  participants: number;
-  price: number;
-  link: string;
-  key: string;
+  accessibility?: number;
+  type?: string;
+  participants?: number;
+  price?: number;
+  link?: string;
+  key?: string;
+  aiMessage?: string;
 }
 interface SearchBarProps {
   activities: ActivityItem[]; // Aktiviteleri prop olarak alın
@@ -28,12 +29,13 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({activities}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>(); 
+  const { activityContent } = useSelector((state: any) => state.homeReducer);
 
   const [searchText, setSearchText] = useState<string>('');
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
-  const filteredActivities = activities.filter((activites: ActivityItem)=>
-    activites.activity.toLowerCase().includes(searchText.toLowerCase())
+  const filteredActivities = activities?.filter((activites: ActivityItem)=>
+    activites?.activity?.toLowerCase()?.includes(searchText.toLowerCase())
   );
 
   const handleClearSearch = () => {
@@ -59,6 +61,7 @@ const SearchBar: React.FC<SearchBarProps> = ({activities}) => {
   const startChat = (activity: string) => {
     dispatch(clearAiResponse())
     dispatch(fillActivity(activity))
+    dispatch(fillHistoryData(activityContent))
     navigation.navigate('Chat')
   }
   return (
@@ -96,7 +99,7 @@ const SearchBar: React.FC<SearchBarProps> = ({activities}) => {
       <FlatList
         data={filteredActivities}
         renderItem={renderActivityItem}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => item?.activity}
       />
       <BottomTabBar/>
     </SafeAreaView>
